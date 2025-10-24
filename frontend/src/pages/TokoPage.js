@@ -13,7 +13,37 @@ const TokoPage = () => {
   return (
     <Container className="py-5 with-navbar-offset">
       <h1 className="mb-1">Toko</h1>
-      <p className="text-muted mb-4">Daftar cabang narpati leather dan lokasi Google Maps.</p>
+      <p className="text-muted mb-4">Informasi toko pusat dan cabang Narpati Leather.</p>
+
+      {/* Kartu Info Perusahaan */}
+      <Row className="mb-4">
+        <Col md={12}>
+          <Card className="store-card">
+            <Card.Body>
+              <div className="d-flex flex-column flex-md-row justify-content-between gap-3">
+                <div>
+                  <Card.Title className="mb-2">NARPATI LEATHER</Card.Title>
+                  <div className="text-muted mb-2">Retail kerajinan produk kulit</div>
+                  <div>
+                    <strong>Alamat:</strong><br />
+                    Jln A. Yani No. 302–302, Komplek Sukaregang Leather Center<br />
+                    Kel. Kota Wetan, Kec. Garut Kota, Kab. Garut – Jawa Barat
+                  </div>
+                </div>
+                <div>
+                  <ul className="mb-0" style={{ listStyle: 'none', paddingLeft: 0 }}>
+                    <li><strong>Pemilik:</strong> Haliman Nasir</li>
+                    <li><strong>Instagram:</strong> <a href="https://instagram.com/narpati_leather" target="_blank" rel="noopener noreferrer">@narpati_leather</a></li>
+                    <li><strong>No. Tlp:</strong> <a href="tel:082116961475">0821 1696 1475</a></li>
+                  </ul>
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <p className="text-muted mb-3">Daftar cabang dan lokasi Google Maps.</p>
       <Row className="store-grid">
         {stores.map((store, idx) => (
           <Col key={store.id} md={6} lg={4} className="mb-4">

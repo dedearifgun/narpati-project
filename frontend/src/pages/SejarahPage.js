@@ -1,60 +1,155 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
+
+const SectionTitle = ({ children }) => (
+  <h2 className="mt-4 mb-3" style={{ fontWeight: 700 }}>{children}</h2>
+);
+
+const Bullet = ({ children }) => (
+  <li className="mb-2">{children}</li>
+);
 
 const SejarahPage = () => {
   return (
-    <Container className="py-5 with-navbar-offset history-page">
-      <header className="history-header mb-4">
-        <h1 className="mb-2">Sejarah</h1>
-        <p className="text-muted">Perjalanan narpati leather, 2010—sekarang.</p>
-      </header>
+    <Container className="py-5 with-navbar-offset">
+      <h1 className="mb-1">Sejarah & Profil</h1>
+      <p className="text-muted mb-4">Profil singkat, visi-misi, sejarah, produk, dan prestasi Narpati Leather.</p>
 
-      <div className="timeline">
-        <div className="timeline-item">
-          <span className="timeline-dot" />
-          <div className="timeline-year">2010</div>
-          <div className="timeline-card">
-            <h3 className="timeline-title">Awal Berdiri</h3>
-            <p>Berawal dari workshop kecil dengan visi sederhana: kualitas nomor satu, ketelitian, dan integritas dalam setiap produk.</p>
-          </div>
-        </div>
+      {/* Tentang Kami */}
+      <Row>
+        <Col md={12}>
+          <Card className="mb-4">
+            <Card.Body>
+              <SectionTitle>Tentang Kami</SectionTitle>
+              <p>
+                Narpati Leather merupakan salah satu UMKM yang memproduksi dan menjual
+                produk-produk berbahan dasar kulit, baik kulit sapi maupun kulit domba.
+                Produk yang dihasilkan di antaranya jaket kulit, tas pria dan wanita,
+                dompet, ikat pinggang, dan aksesori lainnya.
+              </p>
+              <Row>
+                <Col md={6}>
+                  <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+                    <Bullet>
+                      <strong>Nama Perusahaan:</strong> NARPATI LEATHER
+                    </Bullet>
+                    <Bullet>
+                      <strong>Bidang Usaha:</strong> Retail kerajinan produk kulit
+                    </Bullet>
+                    <Bullet>
+                      <strong>Alamat:</strong> Jln A. Yani No. 302–302, Komplek Sukaregang Leather Center,
+                      Kel. Kota Wetan, Kec. Garut Kota, Kab. Garut – Jawa Barat
+                    </Bullet>
+                  </ul>
+                </Col>
+                <Col md={6}>
+                  <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
+                    <Bullet><strong>Pemilik:</strong> Haliman Nasir</Bullet>
+                    <Bullet>
+                      <strong>Instagram:</strong> <a href="https://instagram.com/narpati_leather" target="_blank" rel="noopener noreferrer">@narpati_leather</a>
+                    </Bullet>
+                    <Bullet>
+                      <strong>No. Tlp:</strong> <a href="tel:082116961475">0821 1696 1475</a>
+                    </Bullet>
+                  </ul>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-        <div className="timeline-item">
-          <span className="timeline-dot" />
-          <div className="timeline-year">2014</div>
-          <div className="timeline-card">
-            <h3 className="timeline-title">Tumbuh Pesat</h3>
-            <p>Koleksi bertambah, proses produksi makin rapi. Reseller pertama mulai bergabung dan memperluas jangkauan kami.</p>
-          </div>
-        </div>
+      {/* Visi & Misi */}
+      <Row>
+        <Col md={12}>
+          <Card className="mb-4">
+            <Card.Body>
+              <SectionTitle>Visi & Misi</SectionTitle>
+              <Row>
+                <Col md={6}>
+                  <h5 className="fw-bold">Visi</h5>
+                  <p>
+                    Menjadi UMKM pilihan masyarakat serta kebanggaan daerah Garut yang
+                    mampu menghasilkan produk kerajinan kulit berkualitas.
+                  </p>
+                </Col>
+                <Col md={6}>
+                  <h5 className="fw-bold">Misi</h5>
+                  <ul>
+                    <Bullet>
+                      Menjadi UMKM yang menghasilkan dan menjadi retail produk kulit berkualitas.
+                    </Bullet>
+                    <Bullet>
+                      Berkontribusi memenuhi kebutuhan produk-produk kulit yang dibutuhkan masyarakat.
+                    </Bullet>
+                  </ul>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-        <div className="timeline-item">
-          <span className="timeline-dot" />
-          <div className="timeline-year">2018</div>
-          <div className="timeline-card">
-            <h3 className="timeline-title">Ekspansi Nasional</h3>
-            <p>Masuk ke platform e‑commerce dan memperkuat jaringan reseller di berbagai kota. Pertumbuhan penjualan meningkat signifikan.</p>
-          </div>
-        </div>
+      {/* Sejarah Toko */}
+      <Row>
+        <Col md={12}>
+          <Card className="mb-4">
+            <Card.Body>
+              <SectionTitle>Sejarah Toko</SectionTitle>
+              <p>
+                Berawal dari hadirnya sentra penjualan kerajinan kulit terbesar di Kabupaten Garut,
+                yang kini dikenal sebagai Sukaregang Leather Center, Narpati Leather menjadi
+                salah satu bagian dari banyaknya toko retail di dalamnya. Memulai usaha pada
+                Maret 2015, Narpati Leather konsisten memproduksi dan menjual produk-produk
+                kerajinan kulit berkualitas.
+              </p>
+              <SectionTitle>Linimasa Singkat</SectionTitle>
+              <ul>
+                <Bullet>2015 — Memulai operasional di Sukaregang Leather Center.</Bullet>
+                <Bullet>2016 — Ekspansi kategori produk dan peningkatan kapasitas produksi.</Bullet>
+                <Bullet>2017 — Penghargaan UKM Berprestasi dari Bupati Garut.</Bullet>
+                <Bullet>2018–2020 — Penguatan brand dan peningkatan kanal pemasaran.</Bullet>
+                <Bullet>2021–Sekarang — Diversifikasi produk dan perbaikan layanan pelanggan.</Bullet>
+              </ul>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-        <div className="timeline-item">
-          <span className="timeline-dot" />
-          <div className="timeline-year">2022</div>
-          <div className="timeline-card">
-            <h3 className="timeline-title">Percepatan & Kolaborasi</h3>
-            <p>Skala operasi naik; gudang terpusat, QA makin ketat, dan dukungan pelanggan lebih responsif. Jumlah reseller terus bertambah.</p>
-          </div>
-        </div>
+      {/* Produk & Layanan */}
+      <Row>
+        <Col md={12}>
+          <Card className="mb-4">
+            <Card.Body>
+              <SectionTitle>Produk & Layanan</SectionTitle>
+              <ul>
+                <Bullet>Jaket kulit</Bullet>
+                <Bullet>Tas untuk pria dan wanita</Bullet>
+                <Bullet>Dompet</Bullet>
+                <Bullet>Ikat pinggang</Bullet>
+                <Bullet>Aksesori kulit lainnya</Bullet>
+              </ul>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-        <div className="timeline-item timeline-item--now">
-          <span className="timeline-dot" />
-          <div className="timeline-year">Sekarang</div>
-          <div className="timeline-card">
-            <h3 className="timeline-title">Toko Besar. Tampilan Baru.</h3>
-            <p>narpati leather kini beroperasi dalam skala besar dengan jaringan reseller yang luas. Kami terus berinovasi menghadirkan tampilan yang lebih modern dan pengalaman belanja yang menyenangkan—dengan komitmen yang sama: kualitas tertinggi dan harga jujur.</p>
-          </div>
-        </div>
-      </div>
+      {/* Prestasi */}
+      <Row>
+        <Col md={12}>
+          <Card className="mb-4">
+            <Card.Body>
+              <SectionTitle>Prestasi</SectionTitle>
+              <ul>
+                <Bullet>
+                  2017 — Penghargaan dari Bupati Garut sebagai UKM Berprestasi Bidang Kerajinan Kulit
+                  Tingkat Kabupaten Garut.
+                </Bullet>
+              </ul>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
     </Container>
   );
 };

@@ -14,6 +14,8 @@ const CategoryPage = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('all');
+  const [availableSubcategories, setAvailableSubcategories] = useState([]);
   const [page] = useState(1);
   const [limit] = useState(9);
   const [sort] = useState('newest');
@@ -45,6 +47,7 @@ const CategoryPage = () => {
         const params = categoryId ? { gender: apiGender, category: categoryId } : { gender: apiGender };
         const prodRes = await productAPI.getProducts({
           ...params,
+          ...(selectedSubcategory && selectedSubcategory !== 'all' ? { subcategory: selectedSubcategory } : {}),
           page,
           limit,
           sort,
@@ -65,7 +68,53 @@ const CategoryPage = () => {
       }
     };
     fetchData();
-  }, [gender, category, apiGender, page, limit, sort, minPrice, maxPrice]);
+  }, [gender, category, apiGender, page, limit, sort, minPrice, maxPrice, selectedSubcategory]);
+
+  // Inisialisasi selectedSubcategory dari query string saat kategori/gender berubah
+  useEffect(() => {
+    try {
+      const url = new URL(window.location.href);
+      const sub = url.searchParams.get('sub') || 'all';
+      setSelectedSubcategory(sub);
+    } catch (_) {
+      setSelectedSubcategory('all');
+    }
+  }, [gender, category]);
+
+  // Hitung subkategori yang memiliki produk (hide yang kosong)
+  useEffect(() => {
+    let cancelled = false;
+    const computeAvailableSubs = async () => {
+      try {
+        if (!Array.isArray(categories) || categories.length === 0) {
+          if (!cancelled) setAvailableSubcategories([]);
+          return;
+        }
+        const chosenSlug = selectedCategory !== 'all' ? selectedCategory : (categories[0]?.slug || '');
+        const cat = categories.find(c => c.slug === chosenSlug);
+        const categoryId = cat?._id || null;
+        const subs = Array.isArray(cat?.subcategories) ? cat.subcategories : [];
+        if (!categoryId || subs.length === 0) {
+          if (!cancelled) setAvailableSubcategories([]);
+          return;
+        }
+        const checks = await Promise.all(subs.map(async (s) => {
+          try {
+            const res = await productAPI.getProducts({ gender: apiGender, category: categoryId, subcategory: s, limit: 1 });
+            const total = res?.data?.total ?? (Array.isArray(res?.data?.data) ? res.data.data.length : 0);
+            return total > 0 ? s : null;
+          } catch (_) {
+            return null;
+          }
+        }));
+        if (!cancelled) setAvailableSubcategories(checks.filter(Boolean));
+      } catch (e) {
+        if (!cancelled) setAvailableSubcategories([]);
+      }
+    };
+    computeAvailableSubs();
+    return () => { cancelled = true; };
+  }, [categories, selectedCategory, apiGender]);
 
   // Prefetch next page when available
   useEffect(() => {
@@ -95,8 +144,22 @@ const CategoryPage = () => {
 
   const handleSelectCategory = (slug) => {
     setSelectedCategory(slug);
+    setSelectedSubcategory('all');
     const target = slug === 'all' ? `/category/${gender}/all` : `/category/${gender}/${slug}`;
     window.location.href = target;
+  };
+
+  const handleSelectSubcategory = (sub) => {
+    setSelectedSubcategory(sub);
+    try {
+      const url = new URL(window.location.href);
+      if (sub && sub !== 'all') {
+        url.searchParams.set('sub', sub);
+      } else {
+        url.searchParams.delete('sub');
+      }
+      window.history.replaceState({}, '', url.toString());
+    } catch (_) {}
   };
 
   const genderTitle = gender === 'pria' ? 'Pria' : gender === 'wanita' ? 'Wanita' : 'Aksesoris';
@@ -134,8 +197,12 @@ const CategoryPage = () => {
           <CategoryFilters
             categories={categories}
             selectedCategory={selectedCategory}
+            selectedSubcategory={selectedSubcategory}
             onSelectCategory={handleSelectCategory}
+            onSelectSubcategory={handleSelectSubcategory}
             genderTitle={genderTitle}
+            currentGender={gender}
+            subcategories={availableSubcategories}
           />
         </Col>
         <Col lg={10} md={9}>

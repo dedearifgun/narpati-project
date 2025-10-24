@@ -6,16 +6,39 @@ import React, { useMemo, useState } from 'react';
 // - selectedCategory: slug kategori terpilih atau 'all'
 // - onSelectCategory: (slug|'all') => void
 // - genderTitle: label gender untuk heading (Pria/Wanita/Aksesoris)
-const CategoryFilters = ({ categories = [], selectedCategory = 'all', onSelectCategory, genderTitle = '' }) => {
+const CategoryFilters = ({ categories = [], selectedCategory = 'all', selectedSubcategory = 'all', onSelectCategory, onSelectSubcategory, genderTitle = '', currentGender = '', subcategories = null }) => {
   const [open, setOpen] = useState({ collection: true, others: false, filters: false });
 
-  const items = useMemo(() => {
-    return [{ name: 'Semua Style', slug: 'all' }, ...categories.map(c => ({ name: c.name, slug: c.slug }))];
-  }, [categories]);
+  // Subkategori dari kategori terpilih, dengan override jika prop `subcategories` tersedia
+  const subItems = useMemo(() => {
+    // Jika ada override subcategories dari parent (CategoryPage), gunakan itu
+    if (Array.isArray(subcategories)) {
+      const items = [{ name: 'Semua Style', slug: 'all' }];
+      return subcategories.length
+        ? [...items, ...subcategories.map(s => ({ name: s, slug: s }))]
+        : items;
+    }
 
-  const handleSelect = (slug) => {
-    if (typeof onSelectCategory === 'function') onSelectCategory(slug);
-  };
+    // Fallback ke kategori API ketika override tidak diberikan
+    if (!Array.isArray(categories) || categories.length === 0) {
+      return [{ name: 'Semua Style', slug: 'all' }];
+    }
+    const current = String(currentGender || '').toLowerCase();
+    const selectedSlug = selectedCategory !== 'all'
+      ? selectedCategory
+      : (categories.find(c => String(c.gender || '').toLowerCase() === current)?.slug || categories[0]?.slug || '');
+    const cat = categories.find(c => c.slug === selectedSlug);
+    const subs = Array.isArray(cat?.subcategories) ? cat.subcategories : [];
+    return [{ name: 'Semua Style', slug: 'all' }, ...subs.map(s => ({ name: s, slug: s }))];
+  }, [categories, selectedCategory, currentGender, subcategories]);
+
+  // Daftar kategori utama lain (Pria/Wanita/Aksesoris)
+  const otherMainCategories = useMemo(() => {
+    const current = String(currentGender || '').toLowerCase();
+    const mains = ['pria', 'wanita', 'aksesoris'];
+    const label = (slug) => (slug === 'pria' ? 'Pria' : slug === 'wanita' ? 'Wanita' : 'Aksesoris');
+    return mains.filter(m => m !== current).map(slug => ({ slug, label: label(slug) }));
+  }, [currentGender]);
 
   return (
     <aside className="filter-sidebar">
@@ -33,11 +56,18 @@ const CategoryFilters = ({ categories = [], selectedCategory = 'all', onSelectCa
           <div className="filter-group">
             <div className="filter-group-title">{genderTitle}</div>
             <ul className="filter-list">
-              {items.map((it) => (
+              {subItems.map((it) => (
                 <li key={it.slug}>
                   <button
-                    className={`filter-item ${selectedCategory === it.slug ? 'active' : ''}`}
-                    onClick={() => handleSelect(it.slug)}
+                    className={`filter-item ${selectedSubcategory === it.slug ? 'active' : ''}`}
+                    onClick={() => {
+                      if (it.slug === 'all') {
+                        // Reset subkategori ke semua style pada kategori terpilih
+                        if (typeof onSelectSubcategory === 'function') onSelectSubcategory('all');
+                      } else {
+                        if (typeof onSelectSubcategory === 'function') onSelectSubcategory(it.slug);
+                      }
+                    }}
                   >
                     {it.name}
                   </button>
@@ -56,9 +86,14 @@ const CategoryFilters = ({ categories = [], selectedCategory = 'all', onSelectCa
         {open.others && (
           <div className="filter-group">
             <ul className="filter-list">
-              {['Sneakers', 'Shoes', 'Jackets', 'Shirts & Apparel', 'Bags', 'Accessories'].map((label) => (
-                <li key={label}>
-                  <button className="filter-item inactive" disabled>{label}</button>
+              {otherMainCategories.map((it) => (
+                <li key={it.slug}>
+                  <button
+                    className="filter-item"
+                    onClick={() => { window.location.href = `/category/${it.slug}/all`; }}
+                  >
+                    {it.label}
+                  </button>
                 </li>
               ))}
             </ul>
