@@ -1,208 +1,55 @@
-.App {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ====== Global Fonts (Tailwind default sans-serif stack) ====== */
-body {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-               "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-               "Liberation Sans", sans-serif, "Apple Color Emoji",
-               "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-
-h1, h2, h3, h4, h5, h6,
-.display-1, .display-2, .display-3, .display-4 {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-               "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-               "Liberation Sans", sans-serif, "Apple Color Emoji",
-               "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-weight: 700;
-  letter-spacing: 0.2px;
-}
-
-main {
-  flex: 1;
-}
-
-.navbar-brand {
-  font-weight: bold;
-  font-size: 1.5rem;
-}
-
-/* Navbar transparan dengan teks putih, hover putih background dan teks hitam */
-.navbar-transparent {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  position: relative;
-  border: none !important;
-  box-shadow: none !important;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  z-index: 1000;
-}
-
-/* Override semua kemungkinan class Bootstrap navbar */
-.navbar-transparent.navbar,
-.navbar-transparent.navbar-light,
-.navbar-transparent.navbar-expand-lg,
-.navbar-transparent.navbar-expand,
-.navbar-transparent.navbar-dark,
-.navbar-transparent.bg-light,
-.navbar-transparent.bg-dark,
-.navbar-transparent.bg-primary,
-.navbar-transparent.bg-secondary,
-.navbar-transparent.bg-success,
-.navbar-transparent.bg-info,
-.navbar-transparent.bg-warning,
-.navbar-transparent.bg-danger {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* Hapus pseudo-element untuk mencegah overlay putih */
-
-.navbar-transparent.scrolled .navbar-brand,
-.navbar-transparent.scrolled .nav-link {
-  color: #000 !important;
-}
-
-.navbar-transparent .container {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-}
-
-.navbar-transparent .navbar-brand,
-.navbar-transparent .nav-link { 
-  color: #fff !important; 
-  transition: color 0.3s ease;
-}
-
-.navbar-transparent .nav-link { 
-  padding: 6px 12px; 
-  transition: color 0.3s ease; 
-}
-
-/* Efek hover dengan overlay putih dari kiri ke kanan */
-.navbar-transparent:hover .navbar-brand,
-.navbar-transparent:hover .nav-link { 
-  color: #000 !important; 
-}
-
-.navbar-center-brand { 
-  justify-self: center; 
-}
-
-/* CSS dengan specificity tinggi untuk memastikan navbar transparan */
-.navbar.navbar-expand-lg.navbar-transparent.fixed-top {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* Override Bootstrap navbar default styling */
-body .navbar.navbar-transparent {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
+/* ====== Home Hero Section ====== */
 .hero-section {
   background-image: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url('./assets/hero-bg.jpg');
   background-size: cover;
   background-position: center;
   color: white;
-  min-height: 100vh; /* penuh layar */
+  min-height: 100vh;
   display: flex;
   align-items: center;
   margin-top: 0 !important;
   padding-top: 0 !important;
-  padding-bottom: 0; /* rapat ke bawah agar testimoni langsung di bawah hero */
 }
+.hero-section h1 { font-size: 3rem; margin-bottom: 8px; }
+.hero-section p { font-size: 1.05rem; margin-bottom: 16px; }
+.hero-section > .container { padding-top: 0 !important; }
+.hero-section .cta-btn { background: #ffffff !important; color: #111827 !important; border: 1px solid #e5e7eb !important; border-radius: 6px; padding: 10px 16px; font-weight: 600; }
+.hero-section .cta-btn:hover, .hero-section .cta-btn:focus { background: #f3f4f6 !important; color: #111827 !important; border-color: #e5e7eb !important; }
 
-.hero-section h1 {
-  font-size: 3rem; /* sedikit lebih kecil agar ringkas */
-  margin-bottom: 8px;
-}
-
-.hero-section p {
-  font-size: 1.05rem;
-  margin-bottom: 16px;
-}
-
-/* CTA di hero: selalu putih */
-.hero-section .cta-btn {
-  background: #ffffff !important;
-  color: #111827 !important; /* gray-900 */
-  border: 1px solid #e5e7eb !important; /* gray-200 */
-  border-radius: 6px;
-  padding: 10px 16px;
-  font-weight: 600;
-  margin-right: 0; /* jarak dikontrol oleh gap di container */
-}
-.hero-section .cta-btn:hover,
-.hero-section .cta-btn:focus {
-  background: #f3f4f6 !important; /* gray-100 */
-  color: #111827 !important;
-  border-color: #e5e7eb !important;
-}
-
-/* Pastikan tidak ada padding top pada container pertama di hero */
-.hero-section > .container {
-  padding-top: 0 !important;
-}
-/* ===== Category Page ===== */
+/* ====== Category Banner ====== */
 .category-hero {
-  background-image: url('./assets/2800x890-kategory.jpg'); /* default/fallback */
+  background-image: url('./assets/2800x890-kategory.jpg');
   background-size: cover;
   background-position: center;
-  height: 360px; /* sedikit lebih besar lagi */
-  border-radius: 0; /* sudut lancip */
+  height: 360px;
+  border-radius: 0;
   margin-bottom: 12px;
   position: relative;
   color: #fff;
   display: flex;
-  align-items: center; /* teks di tengah vertikal */
-  justify-content: flex-start; /* bukan di tengah persis, lebih ke kiri */
+  align-items: center;
+  justify-content: flex-start;
   padding: 16px 20px;
-  padding-left: 12%; /* offset horizontal ala contoh */
+  padding-left: 12%;
 }
-
-.category-hero--pria {
-  background-image: url('./assets/2800x890-pria.jpg');
-}
-
-.category-hero--wanita {
-  background-image: url('./assets/2800x890-wanita.jpg');
-}
-
-.category-hero--aksesoris {
-  background-image: url('./assets/2800x890-kategory.jpg');
-}
-
+.category-hero--pria { background-image: url('./assets/2800x890-pria.jpg'); }
+.category-hero--wanita { background-image: url('./assets/2800x890-wanita.jpg'); }
+.category-hero--aksesoris { background-image: url('./assets/2800x890-kategory.jpg'); }
 .category-hero::after { content: none; background: none; }
-
 .category-hero__overlay { position: relative; z-index: 1; text-align: left; }
 .category-hero__title { font-family: 'Libre Baskerville', serif; font-size: 1.6rem; font-weight: 700; margin: 0; }
 .category-hero__tagline { font-family: 'Libre Baskerville', serif; font-size: 1rem; margin: 6px 0 0; opacity: 0.95; }
-
-/* Responsif: sesuaikan tinggi banner agar proporsional */
-@media (max-width: 992px) { /* tablet landscape */
+@media (max-width: 992px) {
   .category-hero { height: 280px; padding: 14px 16px; padding-left: 10%; }
   .category-hero__title { font-size: 1.4rem; }
   .category-hero__tagline { font-size: 0.95rem; }
 }
-@media (max-width: 768px) { /* tablet/phone */
+@media (max-width: 768px) {
   .category-hero { height: 220px; padding: 12px 14px; padding-left: 8%; }
   .category-hero__title { font-size: 1.25rem; }
   .category-hero__tagline { font-size: 0.9rem; }
 }
-@media (max-width: 480px) { /* phone kecil */
+@media (max-width: 480px) {
   .category-hero { height: 190px; padding: 10px 12px; padding-left: 6%; }
   .category-hero__title { font-size: 1.1rem; }
   .category-hero__tagline { font-size: 0.85rem; }
@@ -428,14 +275,14 @@ body .navbar.navbar-transparent {
   position: relative; /* di bawah gambar, bukan overlay */
   display: flex; /* selalu render untuk menjaga tinggi seragam */
   align-items: center;
-  justify-content: flex-start !important; /* ratakan ke kiri agar semua tampak sejajar */
+  justify-content: center !important; /* center-kan preview warna */
   height: 48px; /* lebih kecil agar hemat ruang */
   padding: 0 8px;
 }
 .pc-color-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start !important; /* ratakan isi ke kiri (bukan tengah) */
+  justify-content: center !important; /* isi baris warna di tengah */
   gap: 6px;
   opacity: 1; /* selalu terlihat */
   pointer-events: auto;
