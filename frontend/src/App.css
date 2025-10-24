@@ -249,10 +249,11 @@ body .navbar.navbar-transparent {
 /* Kotak gambar seragam dengan rasio tetap dan cropping rapi */
 .pc-img-wrapper {
   position: relative;
-  height: 220px; /* tinggi tetap agar baris warna sejajar */
+  aspect-ratio: 4 / 3; /* jaga ukuran seragam mengikuti lebar kolom */
+  height: auto;
   width: 100%;
   background: #fff;
-  padding: 8px; /* margin dalam seragam agar semua tampak sama */
+  padding: 0; /* isi gambar penuh tanpa padding agar rapi */
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -261,27 +262,34 @@ body .navbar.navbar-transparent {
 .pc-img-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* samakan tampilan antar warna */
+  object-fit: cover; /* penuhi kotak dengan crop tengah agar konsisten */
   object-position: center;
   transition: transform 0.2s ease;
 }
 .product-card:hover .pc-img-wrapper img { transform: scale(1.005); }
 
-/* Responsif: sesuaikan tinggi gambar untuk layar kecil/besar */
+/* Responsif: hapus tinggi tetap, biar ikut rasio */
 @media (max-width: 576px) {
-  .pc-img-wrapper { height: 180px; }
+  .pc-img-wrapper { height: auto; }
 }
 @media (min-width: 1200px) {
-  .pc-img-wrapper { height: 240px; }
+  .pc-img-wrapper { height: auto; }
 }
 
 /* Sudut kartu produk lancip */
 .product-card {
   border-radius: 0;
+  display: flex;
+  flex-direction: column;
 }
 .product-card .card-img-top {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+.product-card .card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ProductCard hover overlay */
@@ -332,7 +340,8 @@ body .navbar.navbar-transparent {
 /* ProductCard color thumbnails */
 .product-card-link { color: #111827; }
 .product-card-link:hover, .product-card-link:focus { color: #111827; text-decoration: none; }
-.product-card .card-title { color: #111827 !important; }
+.product-card .card-title { color: #111827 !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; min-height: 2.6em; }
+.product-card .card-text { color: #6b7280; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; min-height: 1.3em; }
 .pc-color-row-wrapper {
   position: relative; /* di bawah gambar, bukan overlay */
   display: flex; /* selalu render untuk menjaga tinggi seragam */
@@ -387,6 +396,14 @@ body .navbar.navbar-transparent {
   white-space: nowrap;
 }
 
+/* Header grid to align title and price, prevent price wrapping */
+.pc-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  column-gap: 8px;
+}
+
 /* Removed unused New Arrivals styles (.new-arrivals-grid, .na-*) */
 
 /* Latest Creations overlay style */
@@ -400,7 +417,7 @@ body .navbar.navbar-transparent {
 }
 .latest-creations-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: stretch;
   gap: 14px; /* sedikit spasi antar kotak */
   width: 100%;

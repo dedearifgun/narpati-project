@@ -69,21 +69,21 @@ const ProductCard = ({ product }) => {
         </div>
         {/* Baris warna dipindah keluar dari gambar */}
       </div>
-      {colorEntries.length > 0 && (
-        <div className="pc-color-row-wrapper">
-          {colorEntries.length > VISIBLE && (
-            <button
-              type="button"
-              className="pc-color-arrow left"
-              disabled={colorOffset === 0}
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setColorOffset(o => Math.max(0, o - 1)); }}
-              aria-label="Warna sebelumnya"
-            >
-              ‹
-            </button>
-          )}
-          <div className="pc-color-row">
-            {colorEntries.slice(colorOffset, colorOffset + VISIBLE).map(([color, url]) => (
+      <div className="pc-color-row-wrapper">
+        {colorEntries.length > VISIBLE && (
+          <button
+            type="button"
+            className="pc-color-arrow left"
+            disabled={colorOffset === 0}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setColorOffset(o => Math.max(0, o - 1)); }}
+            aria-label="Warna sebelumnya"
+          >
+            ‹
+          </button>
+        )}
+        <div className="pc-color-row">
+          {colorEntries.length > 0 ? (
+            colorEntries.slice(colorOffset, colorOffset + VISIBLE).map(([color, url]) => (
               <img
                 key={color}
                 className={`pc-color-thumb ${activeColor === color ? 'active' : ''}`}
@@ -95,23 +95,23 @@ const ProductCard = ({ product }) => {
                 onMouseLeave={() => { setPreviewImage(defaultImage); setActiveColor(defaultColorKey); }}
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
               />
-            ))}
-          </div>
-          {colorEntries.length > VISIBLE && (
-            <button
-              type="button"
-              className="pc-color-arrow right"
-              disabled={colorOffset >= maxOffset}
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setColorOffset(o => Math.min(maxOffset, o + 1)); }}
-              aria-label="Warna berikutnya"
-            >
-              ›
-            </button>
-          )}
+            ))
+          ) : null}
         </div>
-      )}
+        {colorEntries.length > VISIBLE && (
+          <button
+            type="button"
+            className="pc-color-arrow right"
+            disabled={colorOffset >= maxOffset}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); setColorOffset(o => Math.min(maxOffset, o + 1)); }}
+            aria-label="Warna berikutnya"
+          >
+            ›
+          </button>
+        )}
+      </div>
       <Card.Body className="d-flex flex-column">
-        <div className="d-flex justify-content-between align-items-center mb-1">
+        <div className="pc-header mb-1">
           <Card.Title className="mb-0">{product?.name}</Card.Title>
           <span className="pc-price-inline">Rp {Number(product?.price).toLocaleString('id-ID')}</span>
         </div>

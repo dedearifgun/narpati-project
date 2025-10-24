@@ -151,8 +151,8 @@ const CategoryPage = () => {
           {loading ? (
             <Row>
               {Array.from({ length: limit }).map((_, idx) => (
-                <Col key={idx} lg={3} md={4} sm={6} className="mb-4 d-flex">
-                  <div className="skeleton-card">
+                <Col key={idx} lg={3} md={4} sm={6} className="mb-4 d-flex align-items-stretch">
+                  <div className="skeleton-card w-100">
                     <div className="skeleton-img" />
                     <div className="skeleton-text" style={{ width: '60%' }} />
                     <div className="skeleton-text" style={{ width: '40%' }} />
@@ -164,7 +164,7 @@ const CategoryPage = () => {
             <Row>
               {products.length > 0 ? (
                 products.map(product => (
-                  <Col key={product._id || product.id} lg={3} md={4} sm={6} className="mb-4 d-flex">
+                  <Col key={product._id || product.id} lg={3} md={4} sm={6} className="mb-4 d-flex align-items-stretch">
                     <ProductCard product={product} />
                   </Col>
                 ))

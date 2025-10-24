@@ -13,35 +13,32 @@ const NewArrivals = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await productAPI.getProducts({ limit: 12, sort: 'newest' });
+        const res = await productAPI.getProducts({ limit: 4, sort: 'newest' });
         const list = (res?.data?.data || []).filter(Boolean);
 
-        // Tampilkan maksimal 10 produk terbaru; tanpa random
-        const latest = list.slice(0, 10);
+        // Ambil tepat 4 item terbaru jika ada
+        const latest = list.slice(0, 4);
 
-        if (latest.length > 0) {
-          // Jika kurang dari 5, duplikasi berurutan agar grid tetap penuh
-          if (latest.length < 5) {
-            const repeated = [];
-            let i = 0;
-            while (repeated.length < 5) {
-              repeated.push(latest[i % latest.length]);
-              i += 1;
-            }
-            setItems(repeated);
-          } else {
-            setItems(latest);
+        if (latest.length === 4) {
+          setItems(latest);
+        } else if (latest.length > 0) {
+          // Jika kurang dari 4, duplikasi berurutan agar tepat 4
+          const repeated = [];
+          let i = 0;
+          while (repeated.length < 4) {
+            repeated.push(latest[i % latest.length]);
+            i += 1;
           }
+          setItems(repeated);
         } else {
-          // Fallback hanya jika benar-benar tidak ada produk
+          // Fallback 4 kotak kategori jika benar-benar tidak ada produk
           const placeholders = [
             { id: 'ph-pria', name: 'Koleksi Pria', imageUrl: priaImg, fallbackLink: '/category/pria/all' },
             { id: 'ph-wanita', name: 'Koleksi Wanita', imageUrl: wanitaImg, fallbackLink: '/category/wanita/all' },
             { id: 'ph-aksesoris', name: 'Koleksi Aksesoris', imageUrl: aksesorisImg, fallbackLink: '/category/aksesoris/all' },
             { id: 'ph-pria-2', name: 'Jelajahi Koleksi Pria', imageUrl: priaImg, fallbackLink: '/category/pria/all' },
-            { id: 'ph-wanita-2', name: 'Jelajahi Koleksi Wanita', imageUrl: wanitaImg, fallbackLink: '/category/wanita/all' },
           ];
-          setItems(placeholders.slice(0, 5));
+          setItems(placeholders);
         }
       } catch (err) {
         console.error('Gagal memuat produk untuk New Arrivals:', err);
