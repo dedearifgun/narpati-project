@@ -37,11 +37,7 @@ const AdminProducts = () => {
     { value: 'published', label: 'Published' },
     { value: 'archived', label: 'Archived' },
   ];
-  const genderOptions = [
-    { value: 'pria', label: 'Pria' },
-    { value: 'wanita', label: 'Wanita' },
-    { value: 'unisex', label: 'Aksesoris' },
-  ];
+  // Hapus genderOptions karena tidak digunakan (gender mengikuti kategori yang dipilih)
   const categoryOptions = (categories || []).map(cat => ({ value: cat._id, label: cat.name }));
   const selectStyles = {
     control: (base, state) => ({

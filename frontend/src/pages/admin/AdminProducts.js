@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Container, Row, Col, Card, Table, Button, Modal, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Table, Button, Modal, Form, Overlay } from 'react-bootstrap';
 import Select from 'react-select';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import AdminSidebar from '../../components/AdminSidebar';
@@ -49,6 +49,13 @@ const AdminProducts = () => {
     setTimeout(() => setSuccessToast(prev => ({ ...prev, show: false })), 3000);
   };
 
+  // Pencarian produk
+  const [searchQuery, setSearchQuery] = useState('');
+  // Filter kategori
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [showCategoryFilter, setShowCategoryFilter] = useState(false);
+  const filterDropdownRef = useRef(null);
+
   // Drag-and-drop state & handlers for manual ordering
   const [dragIndex, setDragIndex] = useState(null);
   const onDragStart = (index) => setDragIndex(index);
@@ -95,6 +102,8 @@ const AdminProducts = () => {
     };
     fetchData();
   }, []);
+
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -332,11 +341,7 @@ const AdminProducts = () => {
     { value: 'published', label: 'Published' },
     { value: 'archived', label: 'Archived' },
   ];
-  const genderOptions = [
-    { value: 'pria', label: 'Pria' },
-    { value: 'wanita', label: 'Wanita' },
-    { value: 'unisex', label: 'Aksesoris' },
-  ];
+  // Hapus genderOptions karena tidak dipakai (gender diambil dari kategori)
   const categoryOptions = (categories || []).map(cat => ({ value: cat._id, label: cat.name }));
   const selectStyles = {
     control: (base, state) => ({
@@ -376,6 +381,26 @@ const AdminProducts = () => {
 
   // Gunakan helper global untuk URL gambar
 
+  // Filter produk berdasarkan kueri pencarian
+  const filteredProducts = products.filter((p) => {
+    const q = (searchQuery || '').toString().toLowerCase().trim();
+    const matchesCategory = categoryFilter ? (p.category === categoryFilter) : true;
+    if (!q) return matchesCategory;
+    const name = (p.name || '').toString().toLowerCase();
+    const id = (p._id || p.id || '').toString().toLowerCase();
+    const catLabel = (getCategoryLabel(p.category) || '').toString().toLowerCase();
+    const sub = (p.subcategory || '').toString().toLowerCase();
+    const priceStr = (p.price != null ? String(p.price) : '').toLowerCase();
+    const matchesQuery = (
+      name.includes(q) ||
+      id.includes(q) ||
+      catLabel.includes(q) ||
+      sub.includes(q) ||
+      priceStr.includes(q)
+    );
+    return matchesCategory && matchesQuery;
+  });
+
   return (
     <div className="admin-layout">
       <Helmet>
@@ -386,10 +411,20 @@ const AdminProducts = () => {
       <AdminSidebar />
       <div className="admin-content">
         <Container fluid className="app">
-          <div className="d-flex justify-content-between align-items-end mb-3 flex-wrap">
+          <div className="admin-topbar-grid mb-3">
             <h2 className="admin-title">Manajemen Produk</h2>
-            <div className="d-flex gap-2">
-              <Button variant="secondary" onClick={saveOrder}>Simpan Urutan</Button>
+            <div className="d-flex gap-2 align-items-center" style={{ width: '100%' }}>
+              <Form.Control
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari produk..."
+                className="admin-search-input"
+                style={{ flex: 1 }}
+              />
+            </div>
+            <div className="d-flex gap-2 align-items-center justify-content-end">
+              <Button variant="secondary" onClick={saveOrder} disabled={searchQuery.trim() !== ''}>Simpan Urutan</Button>
               <Button variant="primary" onClick={() => handleShowModal()}>
                 <i className="fas fa-plus me-2"></i> Tambah Produk
               </Button>
@@ -412,7 +447,57 @@ const AdminProducts = () => {
                       <th className="col-id">ID</th>
                       <th className="col-img">Gambar</th>
                       <th className="col-name">Nama Produk</th>
-                      <th className="col-category">Kategori</th>
+                      <th className="col-category">
+                        <div className="d-flex align-items-center gap-2">
+                          <span>Kategori</span>
+                          <div className="position-relative" ref={filterDropdownRef}>
+                             <Button
+                               variant="outline-secondary"
+                               size="sm"
+                               style={{ 
+                                 padding: '2px 6px', 
+                                 fontSize: '10px',
+                                 border: categoryFilter ? '1px solid #0d6efd' : '1px solid #dee2e6',
+                                 backgroundColor: categoryFilter ? '#e7f1ff' : 'transparent'
+                               }}
+                               onClick={() => setShowCategoryFilter(!showCategoryFilter)}
+                               ref={filterDropdownRef}
+                             >
+                               <i className="fas fa-filter" style={{ fontSize: '10px' }}></i>
+                             </Button>
+                             <Overlay
+                               show={showCategoryFilter}
+                               target={filterDropdownRef.current}
+                               placement="bottom"
+                               rootClose
+                               onHide={() => setShowCategoryFilter(false)}
+                             >
+                               {(props) => (
+                                 <div
+                                   {...props}
+                                   style={{ ...props.style, zIndex: 1050, minWidth: '200px' }}
+                                   className="bg-white border rounded shadow-sm p-2"
+                                 >
+                                   <Form.Select
+                                     value={categoryFilter}
+                                     onChange={(e) => {
+                                       setCategoryFilter(e.target.value);
+                                       setShowCategoryFilter(false);
+                                     }}
+                                     size="sm"
+                                     style={{ fontSize: '12px' }}
+                                   >
+                                     <option value="">Semua Kategori</option>
+                                     {categories.map((c) => (
+                                       <option key={c._id} value={c._id}>{c.name}</option>
+                                     ))}
+                                   </Form.Select>
+                                 </div>
+                               )}
+                             </Overlay>
+                           </div>
+                        </div>
+                      </th>
                       <th className="col-subcategory">Sub Kategori</th>
                       <th className="col-gender" style={{ display: 'none' }}>Untuk</th>
                       <th className="col-price">Harga</th>
@@ -420,14 +505,14 @@ const AdminProducts = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((product, idx) => (
+                    {filteredProducts.map((product, idx) => (
                       <tr
                         key={product._id || product.id}
-                        draggable
-                        onDragStart={() => onDragStart(idx)}
+                        draggable={searchQuery.trim() === ''}
+                        onDragStart={() => { if (searchQuery.trim() === '') onDragStart(idx); }}
                         onDragOver={onDragOver}
-                        onDrop={() => onDrop(idx)}
-                        style={{ cursor: 'move' }}
+                        onDrop={() => { if (searchQuery.trim() === '') onDrop(idx); }}
+                        style={{ cursor: searchQuery.trim() === '' ? 'move' : 'default' }}
                       >
                         <td className="col-id">{product._id || product.id}</td>
                         <td className="col-img">

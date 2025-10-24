@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { Container, Table, Button, Modal, Form, Card } from 'react-bootstrap';
 import Select from 'react-select';
 import ConfirmDialog from '../../components/ConfirmDialog';
-import { FaEdit, FaTrash, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaEdit, FaPlus, FaTimes } from 'react-icons/fa';
 import AdminSidebar from '../../components/AdminSidebar';
 import { categoryAPI } from '../../utils/api';
 import SuccessToast from '../../components/SuccessToast';
@@ -64,12 +64,6 @@ import ErrorNotice from '../../components/ErrorNotice';
     fetchCategories();
   }, [dummyCategories]);
 
-
-  // Handle perubahan input form
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
 
   // Subkategori helpers
   const addSubcategory = () => {
@@ -140,9 +134,6 @@ import ErrorNotice from '../../components/ErrorNotice';
 
   // Hapus kategori
   const [confirmDelete, setConfirmDelete] = useState({ show: false, id: null });
-  const handleDelete = (categoryId) => {
-    setConfirmDelete({ show: true, id: categoryId });
-  };
 
   // Drag-and-drop state & handlers
   const [dragIndex, setDragIndex] = useState(null);
@@ -228,7 +219,6 @@ import ErrorNotice from '../../components/ErrorNotice';
                           <Button
                             variant="outline-primary"
                             size="sm"
-                            className="me-2"
                             onClick={() => openEditModal(category)}
                           >
                             <FaEdit />
@@ -353,43 +343,47 @@ import ErrorNotice from '../../components/ErrorNotice';
 };
 
 export default AdminCategories;
-    const selectStyles = {
-      control: (base, state) => ({
-        ...base,
-        backgroundColor: 'var(--card)',
-        borderColor: 'var(--card-strong)',
-        boxShadow: state.isFocused ? '0 0 0 2px rgba(255,255,255,0.18)' : 'none',
-        '&:hover': { borderColor: 'var(--card-strong)' },
-      }),
-      singleValue: (base) => ({ ...base, color: 'var(--text)' }),
-      input: (base) => ({ ...base, color: 'var(--text)' }),
-      placeholder: (base) => ({ ...base, color: 'var(--muted)' }),
-      menu: (base) => ({
-        ...base,
-        backgroundColor: 'var(--bg-soft)',
-        color: 'var(--text)',
-        border: '1px solid var(--card-strong)',
-        boxShadow: 'none',
-      }),
-      menuList: (base) => ({
-        ...base,
-        backgroundColor: 'var(--bg-soft)',
-        paddingTop: 0,
-        paddingBottom: 0,
-      }),
-      option: (base, state) => ({
-        ...base,
-        backgroundColor: state.isSelected
-          ? 'var(--card)'
-          : state.isFocused
-          ? 'var(--card-strong)'
-          : 'var(--bg-soft)',
-        color: 'var(--text)',
-      }),
-      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-    };
-    const genderOptions = [
-      { value: 'unisex', label: 'Aksesoris' },
-      { value: 'pria', label: 'Pria' },
-      { value: 'wanita', label: 'Wanita' },
-    ];
+
+// Gaya untuk react-select bertema gelap (dipakai di modal)
+const selectStyles = {
+  control: (base, state) => ({
+    ...base,
+    backgroundColor: 'var(--card)',
+    borderColor: 'var(--card-strong)',
+    boxShadow: state.isFocused ? '0 0 0 2px rgba(255,255,255,0.18)' : 'none',
+    '&:hover': { borderColor: 'var(--card-strong)' },
+  }),
+  singleValue: (base) => ({ ...base, color: 'var(--text)' }),
+  input: (base) => ({ ...base, color: 'var(--text)' }),
+  placeholder: (base) => ({ ...base, color: 'var(--muted)' }),
+  menu: (base) => ({
+    ...base,
+    backgroundColor: 'var(--bg-soft)',
+    color: 'var(--text)',
+    border: '1px solid var(--card-strong)',
+    boxShadow: 'none',
+  }),
+  menuList: (base) => ({
+    ...base,
+    backgroundColor: 'var(--bg-soft)',
+    paddingTop: 0,
+    paddingBottom: 0,
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? 'var(--card)'
+      : state.isFocused
+      ? 'var(--card-strong)'
+      : 'var(--bg-soft)',
+    color: 'var(--text)',
+  }),
+  menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+};
+
+// Opsi kategori utama (ditampilkan sebagai "Nama Kategori")
+const genderOptions = [
+  { value: 'unisex', label: 'Aksesoris' },
+  { value: 'pria', label: 'Pria' },
+  { value: 'wanita', label: 'Wanita' },
+];

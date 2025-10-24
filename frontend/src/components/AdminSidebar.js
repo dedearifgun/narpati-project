@@ -31,7 +31,11 @@ const AdminSidebar = () => {
   }, [canManage, isAdmin]);
 
   const links = data.map((item) => {
-    const isActive = location.pathname.startsWith(item.link);
+    // Perbaiki logika aktif: '/admin' harus cocok persis, lainnya boleh prefix
+    const isActive = item.link === '/admin'
+      ? location.pathname === '/admin'
+      : location.pathname.startsWith(item.link);
+
     return (
       <Link
         className={classes.link}

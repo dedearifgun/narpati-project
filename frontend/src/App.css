@@ -340,8 +340,30 @@ body .navbar.navbar-transparent {
 /* ProductCard color thumbnails */
 .product-card-link { color: #111827; }
 .product-card-link:hover, .product-card-link:focus { color: #111827; text-decoration: none; }
-.product-card .card-title { color: #111827 !important; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; min-height: 2.6em; }
-.product-card .card-text { color: #6b7280; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.3; min-height: 1.3em; }
+.product-card .card-title {
+  color: #111827 !important;
+  display: -webkit-box;
+  display: box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+  min-height: 2.6em;
+}
+.product-card .card-text {
+  color: #6b7280;
+  display: -webkit-box;
+  display: box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+  min-height: 1.3em;
+}
 .pc-color-row-wrapper {
   position: relative; /* di bawah gambar, bukan overlay */
   display: flex; /* selalu render untuk menjaga tinggi seragam */
@@ -552,8 +574,12 @@ body .navbar.navbar-transparent {
 /* Header admin dengan garis konsisten */
 .admin-title {
   font-weight: 600;
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 8px;
+  display: inline-block;
+  /* Menggunakan underline pada teks agar panjangnya hanya mengikuti tulisan */
+  text-decoration-line: underline;
+  text-decoration-color: #e9ecef;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
   margin-bottom: 16px;
 }
 
@@ -1269,6 +1295,43 @@ body {
 .admin-content .search { position: relative; }
 .admin-content .search input { background: var(--card); color: var(--text); border: 0; padding: 10px 12px; border-radius: 10px; width: 260px; }
 
+/* Admin Products topbar grid: center search, keep buttons on single line */
+.admin-topbar-grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 520px) auto;
+  align-items: end;
+  gap: var(--space-2);
+}
+
+@media (max-width: 768px) {
+  .admin-topbar-grid {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    row-gap: var(--space-2);
+  }
+}
+
+/* Search input styling consistent with admin dark theme */
+.admin-search-input {
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--card-strong);
+  border-radius: 10px;
+  height: 38px;
+}
+.admin-search-input::placeholder { color: var(--muted); }
+.admin-search-input:focus {
+  border-color: var(--card-strong);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.18);
+  outline: none;
+}
+
+/* Ensure topbar buttons don't break into 2 lines */
+.admin-content .btn,
+.admin-topbar-grid .btn {
+  white-space: nowrap;
+  line-height: 1.2;
+}
 /* Styling select Bulan/Tahun agar konsisten dalam kontainer segmented */
 .admin-content .segmented .form-select {
   background: transparent; /* mengikuti kontainer segmented */
@@ -1479,7 +1542,9 @@ tbody tr:hover { background: var(--card-strong); }
 .admin-content .admin-table .col-subcategory { width: 140px; }
 .admin-content .admin-table .col-gender { width: 110px; }
 .admin-content .admin-table .col-price { width: 120px; }
-.admin-content .admin-table .col-actions { width: 130px; }
+/* Aksi di pinggir (kanan) */
+.admin-content .admin-table .col-actions { width: 130px; text-align: right; }
+.admin-content .admin-table thead .col-actions { text-align: right; }
 .admin-content .admin-table .col-sizes { width: 140px; }
 .admin-content .admin-table .col-colors { width: 140px; }
 .admin-content .admin-table .col-status { width: 110px; }

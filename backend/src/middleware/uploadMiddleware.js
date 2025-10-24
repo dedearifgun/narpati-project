@@ -101,7 +101,7 @@ exports.uploadProductImages = (req, res, next) => {
             const outputPath = path.join(parsed.dir, webpName);
             await sharp(inputPath)
               .rotate()
-              .resize({ width: s.width, withoutEnlargement: true })
+              .resize(s.width, s.width, { fit: 'cover', position: 'center', withoutEnlargement: true })
               .webp({ quality: 82 })
               .toFile(outputPath);
             if (s.key === 'large') {
@@ -172,7 +172,7 @@ exports.uploadCategoryImage = (req, res, next) => {
           const outputPath = path.join(parsed.dir, webpName);
           await sharp(req.file.path)
             .rotate()
-            .resize({ width: s.width, withoutEnlargement: true })
+            .resize(s.width, s.width, { fit: 'cover', position: 'center', withoutEnlargement: true })
             .webp({ quality: 82 })
             .toFile(outputPath);
           if (s.key === 'large') {

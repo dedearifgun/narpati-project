@@ -20,17 +20,14 @@ async function ensureDefaultCategories() {
       }
     }
 
-    // Tambahkan subkategori default untuk Aksesoris
+    // Bersihkan subkategori yang tidak diinginkan pada Aksesoris
     const aksesoris = await Category.findOne({ name: 'Aksesoris' });
     if (aksesoris) {
-      const defaultSubs = ['Dinu', 'Jati Borghini'];
-      const toAdd = defaultSubs.filter(sub => !aksesoris.subcategories?.includes(sub));
-      if (toAdd.length > 0) {
-        await Category.updateOne(
-          { _id: aksesoris._id },
-          { $addToSet: { subcategories: { $each: toAdd } } }
-        );
-      }
+      const toRemove = ['Dinu', 'Jati Borghini'];
+      await Category.updateOne(
+        { _id: aksesoris._id },
+        { $pull: { subcategories: { $in: toRemove } } }
+      );
     }
   } catch (_) {
     // abaikan error pembuatan default agar endpoint tetap bekerja
