@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import CategoryFilters from '../components/CategoryFilters';
 import { productAPI, categoryAPI } from '../utils/api';
@@ -18,12 +18,14 @@ const CategoryPage = () => {
   const [availableSubcategories, setAvailableSubcategories] = useState([]);
   const [page] = useState(1);
   const [limit] = useState(9);
-  const [sort] = useState('newest');
+  const [sort] = useState('manual');
   const [minPrice] = useState('');
   const [maxPrice] = useState('');
   const [pagination, setPagination] = useState({});
   const [, setTotal] = useState(0);
   const prefetchRef = useRef(null);
+  const location = useLocation();
+  const layoutMode = new URLSearchParams(location.search).get('layout') || 'grid';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -228,22 +230,77 @@ const CategoryPage = () => {
               ))}
             </Row>
           ) : (
-            <Row>
-              {products.length > 0 ? (
-                products.map(product => (
-                  <Col key={product._id || product.id} lg={3} md={4} sm={6} className="mb-4 d-flex align-items-stretch">
-                    <ProductCard product={product} />
-                  </Col>
-                ))
-              ) : (
-                <Col>
-                  <div className="text-center py-5">
-                    <h4>Tidak ada produk yang ditemukan</h4>
-                    <p>Silakan coba kategori lain atau kembali ke halaman utama</p>
+            layoutMode === 'flex' ? (
+              <div className="products-flex">
+                {products.length > 0 ? (
+                  products.map(product => (
+                    <div key={product._id || product.id} className="pf-cell">
+                      <ProductCard product={product} />
+                    </div>
+                  ))
+                ) : (
+                  <div className="pf-cell" style={{ flexBasis: '100%' }}>
+                    <div className="text-center py-5">
+                      <h4>Tidak ada produk yang ditemukan</h4>
+                      <p>Silakan coba kategori lain atau kembali ke halaman utama</p>
+                    </div>
                   </div>
-                </Col>
-              )}
-            </Row>
+                )}
+              </div>
+            ) : layoutMode === 'inline' ? (
+              <div className="products-inline">
+                {products.length > 0 ? (
+                  products.map(product => (
+                    <div key={product._id || product.id} className="pi-cell">
+                      <ProductCard product={product} />
+                    </div>
+                  ))
+                ) : (
+                  <div className="pi-cell" style={{ width: '100%' }}>
+                    <div className="text-center py-5">
+                      <h4>Tidak ada produk yang ditemukan</h4>
+                      <p>Silakan coba kategori lain atau kembali ke halaman utama</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : layoutMode === 'rowcol' ? (
+              <div className="rowcol-equal">
+                <Row className="g-3 align-items-stretch">
+                  {products.length > 0 ? (
+                    products.map(product => (
+                      <Col key={product._id || product.id} lg={3} md={4} sm={6} className="d-flex align-items-stretch">
+                        <ProductCard product={product} />
+                      </Col>
+                    ))
+                  ) : (
+                    <Col>
+                      <div className="text-center py-5">
+                        <h4>Tidak ada produk yang ditemukan</h4>
+                        <p>Silakan coba kategori lain atau kembali ke halaman utama</p>
+                      </div>
+                    </Col>
+                  )}
+                </Row>
+              </div>
+            ) : (
+              <div className="products-grid">
+                {products.length > 0 ? (
+                  products.map(product => (
+                    <div key={product._id || product.id} className="product-cell">
+                      <ProductCard product={product} />
+                    </div>
+                  ))
+                ) : (
+                  <div className="product-cell" style={{ gridColumn: '1 / -1' }}>
+                    <div className="text-center py-5">
+                      <h4>Tidak ada produk yang ditemukan</h4>
+                      <p>Silakan coba kategori lain atau kembali ke halaman utama</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )
           )}
         </Col>
       </Row>

@@ -58,15 +58,20 @@ const AdminProducts = () => {
 
   // Drag-and-drop state & handlers for manual ordering
   const [dragIndex, setDragIndex] = useState(null);
-  const onDragStart = (index) => setDragIndex(index);
+  const [dragItemId, setDragItemId] = useState(null);
+  const onDragStart = (index, id) => { setDragIndex(index); setDragItemId(id); };
   const onDragOver = (e) => e.preventDefault();
-  const onDrop = (dropIndex) => {
-    if (dragIndex === null || dragIndex === dropIndex) return;
+  const onDrop = (dropIndex, dropId) => {
+    if (dragItemId == null || dropId == null || dragIndex === null || dragIndex === dropIndex) return;
     const updated = [...products];
-    const [moved] = updated.splice(dragIndex, 1);
-    updated.splice(dropIndex, 0, moved);
+    const from = updated.findIndex(p => (p._id || p.id) === dragItemId);
+    const to = updated.findIndex(p => (p._id || p.id) === dropId);
+    if (from < 0 || to < 0) { setDragIndex(null); setDragItemId(null); return; }
+    const [moved] = updated.splice(from, 1);
+    updated.splice(to, 0, moved);
     setProducts(updated);
     setDragIndex(null);
+    setDragItemId(null);
   };
 
   const saveOrder = async () => {
@@ -509,9 +514,9 @@ const AdminProducts = () => {
                       <tr
                         key={product._id || product.id}
                         draggable={searchQuery.trim() === ''}
-                        onDragStart={() => { if (searchQuery.trim() === '') onDragStart(idx); }}
+                        onDragStart={() => { if (searchQuery.trim() === '') onDragStart(idx, product._id || product.id); }}
                         onDragOver={onDragOver}
-                        onDrop={() => { if (searchQuery.trim() === '') onDrop(idx); }}
+                        onDrop={() => { if (searchQuery.trim() === '') onDrop(idx, product._id || product.id); }}
                         style={{ cursor: searchQuery.trim() === '' ? 'move' : 'default' }}
                       >
                         <td className="col-id">{product._id || product.id}</td>

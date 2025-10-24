@@ -15,7 +15,7 @@ code {
 /* Custom styles */
 
 .product-card {
-  margin-bottom: 30px;
+  margin-bottom: 0; /* gunakan gap grid untuk jarak antar kartu, supaya tinggi baris seragam */
   transition: border-color 0.2s;
   border: 1px solid #e5e7eb; /* garis tipis lembut */
   box-shadow: none; /* tanpa shadow */

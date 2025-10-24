@@ -40,8 +40,8 @@ const ProductCard = ({ product }) => {
   const lowStock = totalStock > 0 && totalStock <= 3;
 
   return (
-    <Link to={`/p/${encodeURIComponent(product.code || '')}`} className="text-decoration-none product-card-link d-block h-100">
-      <Card className="product-card h-100">
+    <Link to={`/p/${encodeURIComponent(product.code || '')}`} className="text-decoration-none product-card-link d-flex flex-column h-100">
+    <Card className="product-card h-100">
       <div
         className="pc-img-wrapper"
         onMouseEnter={() => { setPreviewImage(hoverImage); setActiveColor(hoverColorKey); }}
