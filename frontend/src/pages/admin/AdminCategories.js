@@ -90,15 +90,15 @@ import ErrorNotice from '../../components/ErrorNotice';
 
   // Buka modal tambah
   const openAddModal = () => {
-    setModalTitle('Tambah Kategori Baru');
+    setModalTitle('Tambah Sub Kategori');
     setSelectedCategory(null);
-    setFormData({ name: '', gender: 'unisex', subcategories: [] });
+    setFormData({ name: '', gender: 'pria', subcategories: [] });
     setShowModal(true);
   };
 
   // Buka modal edit
   const openEditModal = (category) => {
-    setModalTitle('Edit Kategori');
+    setModalTitle('Edit Sub Kategori');
     setSelectedCategory(category);
     setFormData({
       name: category.name,
@@ -113,26 +113,28 @@ import ErrorNotice from '../../components/ErrorNotice';
     e.preventDefault();
     try {
       if (selectedCategory) {
+        // Hanya update subcategories untuk kategori terpilih
         const { data } = await categoryAPI.updateCategory(selectedCategory._id, {
-          name: formData.name,
-          gender: formData.gender,
           subcategories: formData.subcategories || []
         });
         const updated = categories.map(c => c._id === selectedCategory._id ? data : c);
         setCategories(updated);
-        showToast('Berhasil!', 'Kategori berhasil diperbarui!');
+        showToast('Berhasil!', 'Sub kategori berhasil diperbarui!');
       } else {
-        const { data } = await categoryAPI.createCategory({
-          name: formData.name,
-          gender: formData.gender,
-          subcategories: formData.subcategories || []
+        // Tambah subkategori ke salah satu dari tiga kategori utama
+        const target = categories.find(c => c.gender === formData.gender);
+        if (!target) throw new Error('Kategori utama tidak ditemukan');
+        const mergedSubs = Array.from(new Set([...(target.subcategories || []), ...(formData.subcategories || [])]));
+        const { data } = await categoryAPI.updateCategory(target._id, {
+          subcategories: mergedSubs
         });
-        setCategories([...categories, data]);
-        showToast('Berhasil!', 'Kategori baru berhasil ditambahkan!');
+        const updated = categories.map(c => c._id === target._id ? data : c);
+        setCategories(updated);
+        showToast('Berhasil!', 'Sub kategori berhasil ditambahkan!');
       }
       setShowModal(false);
     } catch (err) {
-      showToast('Gagal', 'Gagal menyimpan kategori: ' + (err?.response?.data?.message || err.message));
+      showToast('Gagal', 'Gagal menyimpan sub kategori: ' + (err?.response?.data?.message || err.message));
     }
   };
 
@@ -185,7 +187,7 @@ import ErrorNotice from '../../components/ErrorNotice';
             <div className="d-flex gap-2">
               <Button variant="secondary" onClick={saveOrder}>Simpan Urutan</Button>
               <Button variant="primary" onClick={openAddModal}>
-                <FaPlus className="me-2" /> Tambah Kategori
+                <FaPlus className="me-2" /> Tambah Sub Kategori
               </Button>
             </div>
           </div>
@@ -199,8 +201,7 @@ import ErrorNotice from '../../components/ErrorNotice';
                   <Table responsive hover className="admin-table">
                   <thead>
                     <tr>
-                      <th className="col-name">Nama</th>
-                      <th className="col-gender">Gender</th>
+                      <th className="col-gender">Kategori</th>
                       <th className="col-subcategory">Sub Kategori</th>
                       <th className="col-actions">Aksi</th>
                     </tr>
@@ -215,7 +216,6 @@ import ErrorNotice from '../../components/ErrorNotice';
                         onDrop={() => onDrop(idx)}
                         style={{ cursor: 'move' }}
                       >
-                        <td className="col-name">{category.name}</td>
                         <td className="col-gender">
                           {category.gender === 'men' && 'Pria'}
                           {category.gender === 'women' && 'Wanita'}
@@ -233,15 +233,7 @@ import ErrorNotice from '../../components/ErrorNotice';
                           >
                             <FaEdit />
                           </Button>
-                          {isAdmin && (
-                            <Button
-                              variant="outline-danger"
-                              size="sm"
-                              onClick={() => handleDelete(category._id)}
-                            >
-                              <FaTrash />
-                            </Button>
-                          )}
+                          {/* Hapus kategori dinonaktifkan untuk menjaga tiga kategori utama */}
                         </td>
                       </tr>
                     ))}
@@ -264,19 +256,9 @@ import ErrorNotice from '../../components/ErrorNotice';
           </Modal.Header>
           <Form onSubmit={handleSubmit}>
             <Modal.Body>
-              <Form.Group className="mb-3">
-                <Form.Label>Nama Kategori</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>Gender</Form.Label>
+                <Form.Label>Nama Kategori</Form.Label>
                 <Select
                   name="gender"
                   value={genderOptions.find(o => o.value === formData.gender) || null}

@@ -414,7 +414,7 @@ const AdminProducts = () => {
                       <th className="col-name">Nama Produk</th>
                       <th className="col-category">Kategori</th>
                       <th className="col-subcategory">Sub Kategori</th>
-                      <th className="col-gender">Untuk</th>
+                      <th className="col-gender" style={{ display: 'none' }}>Untuk</th>
                       <th className="col-price">Harga</th>
                       <th className="col-actions">Aksi</th>
                     </tr>
@@ -440,7 +440,7 @@ const AdminProducts = () => {
                         <td className="col-name">{product.name}</td>
                         <td className="col-category">{getCategoryLabel(product.category)}</td>
                         <td className="col-subcategory">{product.subcategory || '-'}</td>
-                        <td className="col-gender">{product.gender === 'pria' ? 'Pria' : product.gender === 'wanita' ? 'Wanita' : 'Aksesoris'}</td>
+                        <td className="col-gender" style={{ display: 'none' }}></td>
                         <td className="col-price">Rp {Number(product.price).toLocaleString('id-ID')}</td>
                         <td className="col-actions">
                           <Button 
@@ -531,7 +531,7 @@ const AdminProducts = () => {
                   <Select
                     name="category"
                     value={categoryOptions.find(o => o.value === currentProduct.category) || null}
-                    onChange={(opt) => setCurrentProduct(prev => ({ ...prev, category: opt?.value || '', subcategory: '' }))}
+                    onChange={(opt) => { const catId = opt?.value || ''; const selected = categories.find(c => c._id === catId); const g = selected?.gender || 'pria'; setCurrentProduct(prev => ({ ...prev, category: catId, subcategory: '', gender: g })); }}
                     options={categoryOptions}
                     styles={selectStyles}
                     isSearchable
@@ -583,19 +583,7 @@ const AdminProducts = () => {
 
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Untuk</Form.Label>
-                  <Select
-                    name="gender"
-                    value={genderOptions.find(o => o.value === currentProduct.gender) || null}
-                    onChange={(opt) => setCurrentProduct(prev => ({ ...prev, gender: opt?.value || 'pria' }))}
-                    options={genderOptions}
-                    styles={selectStyles}
-                    isSearchable={false}
-                    menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
-                    classNamePrefix="admin-select"
-                  />
-                </Form.Group>
+                <div style={{ display: 'none' }} />
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">

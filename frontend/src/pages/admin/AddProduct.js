@@ -421,7 +421,7 @@ const AdminProducts = () => {
                   <Select
                     name="category"
                     value={categoryOptions.find(o => o.value === currentProduct.category) || null}
-                    onChange={(opt) => setCurrentProduct(prev => ({ ...prev, category: opt?.value || '', subcategory: '' }))}
+                    onChange={(opt) => { const catId = opt?.value || ''; const selected = categories.find(c => c._id === catId); const g = selected?.gender || 'pria'; setCurrentProduct(prev => ({ ...prev, category: catId, subcategory: '', gender: g })); }}
                     options={categoryOptions}
                     styles={selectStyles}
                     isSearchable
@@ -473,19 +473,7 @@ const AdminProducts = () => {
 
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Untuk</Form.Label>
-                  <Select
-                    name="gender"
-                    value={genderOptions.find(o => o.value === currentProduct.gender) || null}
-                    onChange={(opt) => setCurrentProduct(prev => ({ ...prev, gender: opt?.value || 'pria' }))}
-                    options={genderOptions}
-                    styles={selectStyles}
-                    isSearchable={false}
-                    menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
-                    classNamePrefix="admin-select"
-                  />
-                </Form.Group>
+                <div style={{ display: 'none' }} />
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">

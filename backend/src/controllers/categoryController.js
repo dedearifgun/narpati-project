@@ -3,11 +3,48 @@ const path = require('path');
 const fs = require('fs');
 const { logAudit } = require('../utils/audit');
 
+// Tambahkan daftar kategori default: Pria, Wanita, Aksesoris
+const DEFAULT_CATEGORIES = [
+  { name: 'Pria', gender: 'pria' },
+  { name: 'Wanita', gender: 'wanita' },
+  { name: 'Aksesoris', gender: 'unisex' },
+];
+
+async function ensureDefaultCategories() {
+  try {
+    // Pastikan tiga kategori utama tersedia
+    for (const def of DEFAULT_CATEGORIES) {
+      const exists = await Category.findOne({ name: def.name });
+      if (!exists) {
+        await Category.create({ ...def });
+      }
+    }
+
+    // Tambahkan subkategori default untuk Aksesoris
+    const aksesoris = await Category.findOne({ name: 'Aksesoris' });
+    if (aksesoris) {
+      const defaultSubs = ['Dinu', 'Jati Borghini'];
+      const toAdd = defaultSubs.filter(sub => !aksesoris.subcategories?.includes(sub));
+      if (toAdd.length > 0) {
+        await Category.updateOne(
+          { _id: aksesoris._id },
+          { $addToSet: { subcategories: { $each: toAdd } } }
+        );
+      }
+    }
+  } catch (_) {
+    // abaikan error pembuatan default agar endpoint tetap bekerja
+  }
+}
+
 // @desc    Get all categories
 // @route   GET /api/categories
 // @access  Public
 exports.getCategories = async (req, res) => {
   try {
+    // Pastikan 3 kategori default tersedia
+    await ensureDefaultCategories();
+
     let query = {};
 
     // Filter by gender
@@ -22,10 +59,14 @@ exports.getCategories = async (req, res) => {
 
     const categories = await Category.find(query).sort({ order: 1, name: 1 });
 
+    // Batasi hanya ke tiga kategori default
+    const allowedNames = new Set(DEFAULT_CATEGORIES.map(d => d.name));
+    const filtered = (categories || []).filter(c => allowedNames.has(c.name));
+
     res.status(200).json({
       success: true,
-      count: categories.length,
-      data: categories
+      count: filtered.length,
+      data: filtered
     });
   } catch (error) {
     res.status(500).json({
